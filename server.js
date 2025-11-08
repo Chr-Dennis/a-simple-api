@@ -101,3 +101,16 @@ app.listen(port, ()=> {
     console.log(`Server is running on http://localhost:${port}`);
     console.log("Press Ctrl+C to end this process.");
 });
+
+app.post("/api/characters", (request, response) => {
+    if (!request.body) {
+        return response.status(400).json({
+            data: "Bad Request. Missing required information",
+        });
+    }
+
+    const newCharacter = createCharacter(request.body);
+
+    // more code to come
+});
+
