@@ -3,6 +3,10 @@ import express from "express";
 const app = express();
 const port = 2025;
 
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: false }));
+
 const tvCharacters = [
     {
         id: 1,
@@ -102,6 +106,21 @@ app.listen(port, ()=> {
     console.log("Press Ctrl+C to end this process.");
 });
 
+function createCharacter(requestbody) {
+    const newCharacter = {
+        id: tvCharacters.length + 1,
+        name: requestbody.name,
+        show: requestbody.show,
+    };
+    
+    if (!newCharacter.name || !newCharacter.show) {
+        return undefined;
+    }
+
+    tvCharacters.push(newCharacter);
+    return newCharacter;
+}
+
 app.post("/api/characters", (request, response) => {
     if (!request.body) {
         return response.status(400).json({
@@ -111,6 +130,17 @@ app.post("/api/characters", (request, response) => {
 
     const newCharacter = createCharacter(request.body);
 
-    // more code to come
+    if (!newCharacter) {
+        return response.status(400).json({
+            data: "Bad Request. Missing required information",
+        });
+    }
+
+    response.status(201).json({
+        data: newCharacter,
+    });
+
 });
+
+
 
