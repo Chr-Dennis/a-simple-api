@@ -1,4 +1,10 @@
 
+import express from "express";
+
+const characterRouter = express.Router();
+
+import { tvCharacters } from "../data/tvCharacters.js";
+
 function getAllCharacters() {
     return tvCharacters;
 }
@@ -12,7 +18,7 @@ function getCharacterById(characterId) {
 }
 
 
-characterRouter.get("/api/characters", (request, response) => {
+characterRouter.get("/", (request, response) => {
     const characters = getAllCharacters();
     response.status(200).json({
         data: characters,
@@ -20,7 +26,7 @@ characterRouter.get("/api/characters", (request, response) => {
 });
 
 
-characterRouter.get("/api/characters/:id", (request, response) => {
+characterRouter.get("/:id", (request, response) => {
     const character = getCharacterById(request.params.id);
 
     if (!character) {
@@ -35,11 +41,11 @@ characterRouter.get("/api/characters/:id", (request, response) => {
 });
 
 
-function createCharacter(requestbody) {
+function createCharacter(requestBody) {
     const newCharacter = {
         id: tvCharacters.length + 1,
-        name: requestbody.name,
-        show: requestbody.show,
+        name: requestBody.name,
+        show: requestBody.show,
     };
     
     if (!newCharacter.name || !newCharacter.show) {
@@ -50,7 +56,7 @@ function createCharacter(requestbody) {
     return newCharacter;
 }
 
-characterRouter.post("/api/characters", (request, response) => {
+characterRouter.post("/", (request, response) => {
     if (!request.body) {
         return response.status(400).json({
             data: "Bad Request. Missing required information",
@@ -70,4 +76,6 @@ characterRouter.post("/api/characters", (request, response) => {
     });
 
 });
+
+export default characterRouter;
 
