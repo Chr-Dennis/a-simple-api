@@ -97,6 +97,44 @@ app.get('/api/characters/:id', (req, res) => {
     });
 });
 
+function createCharacter(requestBody) {
+    const newCharacter = {
+        id: tvCharacters.length + 1,
+        name: requestBody.name,
+        show: requestBody.show,
+    };
+
+    if (!newCharacter.name || !newCharacter.show) {
+        return undefined;
+    }
+
+    tvCharacters.push(newCharacter)
+    return newCharacter;
+}
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.post('/api/characters', (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({
+            data: 'Bad Request. Missing required information',
+        });
+    }
+
+    const newCharacter = createCharacter(req.body);
+
+    if (!newCharacter) {
+        return res.status(400).json({
+            data: 'Bad Request. Missing required information',
+        });
+    }
+
+    res.status(201).json({
+        data: newCharacter,
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
     console.log('Press Ctrl+C to end this process.');
